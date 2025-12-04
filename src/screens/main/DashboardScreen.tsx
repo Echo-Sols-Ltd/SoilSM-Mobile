@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,16 @@ import {
   Dimensions,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  withDelay,
+  Easing,
+  FadeInDown,
+  FadeInUp,
+} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
 import {Card} from '@components/Card';
@@ -29,35 +39,128 @@ interface MetricCardProps {
   trend?: number;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
+const MetricCard: React.FC<MetricCardProps & {index: number}> = ({
   label,
   value,
   unit,
   icon,
   color,
   trend,
-}) => (
-  <Card style={styles.metricCard} variant="elevated">
-    <View style={styles.metricHeader}>
-      <View style={[styles.metricIconContainer, {backgroundColor: color + '20'}]}>
-        <EmojiIcon emoji={icon} size={28} />
-      </View>
-      {trend !== undefined && (
-        <View style={styles.trendContainer}>
-          <EmojiIcon emoji={trend > 0 ? '📈' : '📉'} size={14} />
-          <Text style={[styles.trendText, {color: trend > 0 ? colors.success.main : colors.error.main}]}>
-            {Math.abs(trend)}%
-          </Text>
+  index,
+}) => {
+  const scale = useSharedValue(0.9);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withDelay(
+      index * 100,
+      withSpring(1, {damping: 12, stiffness: 150})
+    );
+    opacity.value = withDelay(
+      index * 100,
+      withTiming(1, {duration: 400, easing: Easing.out(Easing.cubic)})
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{scale: scale.value}],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <Card style={styles.metricCard} variant="elevated">
+        <View style={styles.metricHeader}>
+          <View style={[styles.metricIconContainer, {backgroundColor: color + '20'}]}>
+            <EmojiIcon emoji={icon} size={28} />
+          </View>
+          {trend !== undefined && (
+            <View style={styles.trendContainer}>
+              <EmojiIcon emoji={trend > 0 ? '📈' : '📉'} size={14} />
+              <Text style={[styles.trendText, {color: trend > 0 ? colors.success.main : colors.error.main}]}>
+                {Math.abs(trend)}%
+              </Text>
+            </View>
+          )}
         </View>
-      )}
+        <Text style={styles.metricValue}>
+          {value}
+          <Text style={styles.metricUnit}>{unit}</Text>
+        </Text>
+        <Text style={styles.metricLabel}>{label}</Text>
+      </Card>
+    </Animated.View>
+  );
+};
+
+const AnimatedBar: React.FC<{value: number; index: number}> = ({value, index}) => {
+  const height = useSharedValue(0);
+
+  useEffect(() => {
+    height.value = withDelay(
+      index * 80 + 400,
+      withSpring(value, {damping: 12, stiffness: 100})
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: `${height.value}%`,
+  }));
+
+  return (
+    <View style={styles.barContainer}>
+      <View style={styles.barBackground}>
+        <Animated.View style={animatedStyle}>
+          <LinearGradient
+            colors={[colors.primary.light, colors.primary.main]}
+            style={styles.bar}
+            start={{x: 0, y: 1}}
+            end={{x: 0, y: 0}}
+          />
+        </Animated.View>
+      </View>
+      <Text style={styles.barLabel}>{value}%</Text>
     </View>
-    <Text style={styles.metricValue}>
-      {value}
-      <Text style={styles.metricUnit}>{unit}</Text>
-    </Text>
-    <Text style={styles.metricLabel}>{label}</Text>
-  </Card>
-);
+  );
+};
+
+const QuickActionButton: React.FC<{
+  icon: string;
+  text: string;
+  color: string;
+  onPress: () => void;
+  index: number;
+}> = ({icon, text, color, onPress, index}) => {
+  const scale = useSharedValue(0.9);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withDelay(
+      800 + index * 100,
+      withSpring(1, {damping: 10, stiffness: 150})
+    );
+    opacity.value = withDelay(
+      800 + index * 100,
+      withTiming(1, {duration: 400})
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{scale: scale.value}],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.View style={[styles.quickActionWrapper, animatedStyle]}>
+      <TouchableOpacity style={styles.quickActionButton} onPress={onPress}>
+        <View style={[styles.quickActionIcon, {backgroundColor: color + '20'}]}>
+          <EmojiIcon emoji={icon} size={28} />
+        </View>
+        <Text style={styles.quickActionText}>{text}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};
 
 export const DashboardScreen: React.FC = () => {
   const {t} = useTranslation();
@@ -118,6 +221,7 @@ export const DashboardScreen: React.FC = () => {
             icon="🌡️"
             color={colors.error.main}
             trend={2}
+            index={0}
           />
           <MetricCard
             label={t('humidity')}
@@ -126,6 +230,7 @@ export const DashboardScreen: React.FC = () => {
             icon="💧"
             color={colors.info.main}
             trend={-3}
+            index={1}
           />
           <MetricCard
             label={t('soilMoisture')}
@@ -134,6 +239,7 @@ export const DashboardScreen: React.FC = () => {
             icon="🌱"
             color={colors.primary.main}
             trend={5}
+            index={2}
           />
           <MetricCard
             label={t('lightIntensity')}
@@ -142,6 +248,7 @@ export const DashboardScreen: React.FC = () => {
             icon="☀️"
             color={colors.warning.main}
             trend={1}
+            index={3}
           />
         </View>
 
@@ -154,17 +261,7 @@ export const DashboardScreen: React.FC = () => {
           <View style={styles.chartContainer}>
             <View style={styles.chartBars}>
               {waterUsageData.map((value, index) => (
-                <View key={index} style={styles.barContainer}>
-                  <View style={styles.barBackground}>
-                    <LinearGradient
-                      colors={[colors.primary.light, colors.primary.main]}
-                      style={[styles.bar, {height: `${value}%`}]}
-                      start={{x: 0, y: 1}}
-                      end={{x: 0, y: 0}}
-                    />
-                  </View>
-                  <Text style={styles.barLabel}>{value}%</Text>
-                </View>
+                <AnimatedBar key={index} value={value} index={index} />
               ))}
             </View>
           </View>
@@ -179,27 +276,30 @@ export const DashboardScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           {upcomingTasks.map((task, index) => (
-            <TouchableOpacity
+            <Animated.View
               key={task.id}
-              style={[
-                styles.taskItem,
-                index < upcomingTasks.length - 1 && styles.taskItemBorder,
-              ]}>
-              <View style={styles.taskContent}>
-                <View style={styles.taskIcon}>
-                  <EmojiIcon emoji="✓" size={20} />
+              entering={FadeInDown.delay(index * 100).duration(400).springify()}>
+              <TouchableOpacity
+                style={[
+                  styles.taskItem,
+                  index < upcomingTasks.length - 1 && styles.taskItemBorder,
+                ]}>
+                <View style={styles.taskContent}>
+                  <View style={styles.taskIcon}>
+                    <EmojiIcon emoji="✓" size={20} />
+                  </View>
+                  <View style={styles.taskInfo}>
+                    <Text style={styles.taskText}>{task.title}</Text>
+                    <Text style={styles.taskDate}>Today, {task.time}</Text>
+                  </View>
                 </View>
-                <View style={styles.taskInfo}>
-                  <Text style={styles.taskText}>{task.title}</Text>
-                  <Text style={styles.taskDate}>Today, {task.time}</Text>
-                </View>
-              </View>
-              <Badge
-                label={t(task.priority)}
-                variant={task.priority === 'high' ? 'error' : task.priority === 'medium' ? 'warning' : 'primary'}
-                size="small"
-              />
-            </TouchableOpacity>
+                <Badge
+                  label={t(task.priority)}
+                  variant={task.priority === 'high' ? 'error' : task.priority === 'medium' ? 'warning' : 'primary'}
+                  size="small"
+                />
+              </TouchableOpacity>
+            </Animated.View>
           ))}
         </Card>
 
@@ -212,8 +312,9 @@ export const DashboardScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           {recentActivities.map((activity, index) => (
-            <View
+            <Animated.View
               key={activity.id}
+              entering={FadeInUp.delay(index * 100).duration(400).springify()}
               style={[
                 styles.activityItem,
                 index < recentActivities.length - 1 && styles.activityItemBorder,
@@ -225,30 +326,33 @@ export const DashboardScreen: React.FC = () => {
                 <Text style={styles.activityText}>{activity.action}</Text>
                 <Text style={styles.activityTime}>{activity.time}</Text>
               </View>
-            </View>
+            </Animated.View>
           ))}
         </Card>
 
         {/* Quick Actions */}
         <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.quickActionButton}>
-            <View style={[styles.quickActionIcon, {backgroundColor: colors.primary.light + '20'}]}>
-              <EmojiIcon emoji="📊" size={28} />
-            </View>
-            <Text style={styles.quickActionText}>{t('soilReport')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton}>
-            <View style={[styles.quickActionIcon, {backgroundColor: colors.info.light + '20'}]}>
-              <EmojiIcon emoji="👥" size={28} />
-            </View>
-            <Text style={styles.quickActionText}>{t('community')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton}>
-            <View style={[styles.quickActionIcon, {backgroundColor: colors.warning.light + '20'}]}>
-              <EmojiIcon emoji="💬" size={28} />
-            </View>
-            <Text style={styles.quickActionText}>{t('messages')}</Text>
-          </TouchableOpacity>
+          <QuickActionButton
+            icon="📊"
+            text={t('soilReport')}
+            color={colors.primary.light}
+            onPress={() => navigation.navigate('Soil')}
+            index={0}
+          />
+          <QuickActionButton
+            icon="👥"
+            text={t('community')}
+            color={colors.info.light}
+            onPress={() => navigation.navigate('Community')}
+            index={1}
+          />
+          <QuickActionButton
+            icon="💬"
+            text={t('messages')}
+            color={colors.warning.light}
+            onPress={() => navigation.navigate('Messages')}
+            index={2}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -492,6 +596,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     marginTop: spacing.sm,
+  },
+  quickActionWrapper: {
+    flex: 1,
   },
   quickActionButton: {
     flex: 1,
