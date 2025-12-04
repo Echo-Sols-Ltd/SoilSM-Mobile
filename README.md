@@ -160,4 +160,3 @@ For support, email support@soilsmart.com or open an issue in the repository.
 ## Acknowledgments
 
 - Design inspiration from Figma: [SoilSmart Design](https://www.figma.com/design/M9Eosu9lcKRebkwlbqPhMQ/SoilSmart?node-id=0-1&p=f&t=g9K75afJb1p1cIMr-0)
-
