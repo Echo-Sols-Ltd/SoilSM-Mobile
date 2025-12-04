@@ -17,6 +17,34 @@ export const AuthNavigator: React.FC = () => {
       initialRouteName="Landing"
       screenOptions={{
         headerShown: false,
+        cardStyleInterpolator: ({current, layouts}) => {
+          return {
+            cardStyle: {
+              transform: [
+                {
+                  translateX: current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [layouts.screen.width, 0],
+                  }),
+                },
+              ],
+            },
+          };
+        },
+        transitionSpec: {
+          open: {
+            animation: 'timing',
+            config: {
+              duration: 300,
+            },
+          },
+          close: {
+            animation: 'timing',
+            config: {
+              duration: 300,
+            },
+          },
+        },
       }}>
       <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
@@ -27,7 +55,16 @@ export const AuthNavigator: React.FC = () => {
       <Stack.Screen
         name="Main"
         component={MainNavigator}
-        options={{gestureEnabled: false}}
+        options={{
+          gestureEnabled: false,
+          cardStyleInterpolator: ({current}) => {
+            return {
+              cardStyle: {
+                opacity: current.progress,
+              },
+            };
+          },
+        }}
       />
     </Stack.Navigator>
   );

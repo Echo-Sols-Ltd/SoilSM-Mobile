@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,14 @@ import {
   ImageBackground,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  withDelay,
+  Easing,
+} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
 import {colors, typography, spacing} from '@theme';
@@ -31,6 +39,51 @@ interface Props {
 
 export const LandingScreen: React.FC<Props> = ({navigation}) => {
   const {t} = useTranslation();
+  
+  // Animation values
+  const logoOpacity = useSharedValue(0);
+  const logoScale = useSharedValue(0.8);
+  const imageOpacity = useSharedValue(0);
+  const imageTranslateY = useSharedValue(30);
+  const featuresOpacity = useSharedValue(0);
+  const buttonsOpacity = useSharedValue(0);
+  const buttonsTranslateY = useSharedValue(20);
+
+  useEffect(() => {
+    // Logo animation
+    logoOpacity.value = withTiming(1, {duration: 600, easing: Easing.out(Easing.cubic)});
+    logoScale.value = withSpring(1, {damping: 10, stiffness: 100});
+    
+    // Image animation
+    imageOpacity.value = withDelay(200, withTiming(1, {duration: 600}));
+    imageTranslateY.value = withDelay(200, withSpring(0, {damping: 12, stiffness: 100}));
+    
+    // Features animation
+    featuresOpacity.value = withDelay(400, withTiming(1, {duration: 500}));
+    
+    // Buttons animation
+    buttonsOpacity.value = withDelay(600, withTiming(1, {duration: 500}));
+    buttonsTranslateY.value = withDelay(600, withSpring(0, {damping: 12, stiffness: 100}));
+  }, []);
+
+  const logoAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: logoOpacity.value,
+    transform: [{scale: logoScale.value}],
+  }));
+
+  const imageAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: imageOpacity.value,
+    transform: [{translateY: imageTranslateY.value}],
+  }));
+
+  const featuresAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: featuresOpacity.value,
+  }));
+
+  const buttonsAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: buttonsOpacity.value,
+    transform: [{translateY: buttonsTranslateY.value}],
+  }));
 
   return (
     <LinearGradient
@@ -40,16 +93,16 @@ export const LandingScreen: React.FC<Props> = ({navigation}) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
           {/* Logo/Icon Section */}
-          <View style={styles.logoContainer}>
+          <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
             <View style={styles.iconCircle}>
               <EmojiIcon emoji="🌱" size={80} />
             </View>
             <Text style={styles.appName}>SoilSmart</Text>
             <Text style={styles.tagline}>{t('welcome')}</Text>
-          </View>
+          </Animated.View>
 
           {/* Illustration Section */}
-          <View style={styles.illustrationContainer}>
+          <Animated.View style={[styles.illustrationContainer, imageAnimatedStyle]}>
             <ImageBackground
               source={Images.agricultureVietnam}
               style={styles.heroImage}
@@ -57,10 +110,10 @@ export const LandingScreen: React.FC<Props> = ({navigation}) => {
               resizeMode="cover">
               <View style={styles.imageOverlay} />
             </ImageBackground>
-          </View>
+          </Animated.View>
 
           {/* Features */}
-          <View style={styles.featuresContainer}>
+          <Animated.View style={[styles.featuresContainer, featuresAnimatedStyle]}>
             <View style={styles.feature}>
               <EmojiIcon emoji="📊" size={32} />
               <Text style={styles.featureText}>{t('smartMonitoring')}</Text>
@@ -73,10 +126,10 @@ export const LandingScreen: React.FC<Props> = ({navigation}) => {
               <EmojiIcon emoji="🌍" size={32} />
               <Text style={styles.featureText}>{t('multiLanguage')}</Text>
             </View>
-          </View>
+          </Animated.View>
 
           {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
+          <Animated.View style={[styles.buttonContainer, buttonsAnimatedStyle]}>
             <Button
               title={t('signUp')}
               onPress={() => navigation.navigate('SignUp')}
@@ -91,7 +144,7 @@ export const LandingScreen: React.FC<Props> = ({navigation}) => {
               style={styles.outlineButton}
               textStyle={styles.outlineButtonText}
             />
-          </View>
+          </Animated.View>
         </View>
       </SafeAreaView>
     </LinearGradient>
