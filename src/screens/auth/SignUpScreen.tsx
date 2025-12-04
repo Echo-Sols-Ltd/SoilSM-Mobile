@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
@@ -17,6 +18,7 @@ import {colors, typography, spacing} from '@theme';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@navigation/types';
 import {EmojiIcon} from '@components';
+import {useAuth} from '@contexts/AuthContext';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -29,11 +31,13 @@ interface Props {
 
 export const SignUpScreen: React.FC<Props> = ({navigation}) => {
   const {t} = useTranslation();
+  const {signUp} = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validate = () => {
     const newErrors: {[key: string]: string} = {};
@@ -52,9 +56,21 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = () => {
-    if (validate()) {
-      navigation.navigate('Verification');
+  const handleSignUp = async () => {
+    if (!validate()) return;
+
+    setIsLoading(true);
+    try {
+      const result = await signUp(name, email, password);
+      if (result.success) {
+        navigation.navigate('Verification');
+      } else {
+        Alert.alert(t('error'), result.error || t('signUpFailed'));
+      }
+    } catch (error) {
+      Alert.alert(t('error'), t('signUpFailed'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -130,6 +146,8 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
               onPress={handleSignUp}
               variant="primary"
               style={styles.button}
+              loading={isLoading}
+              disabled={isLoading}
             />
           </View>
 
@@ -213,7 +231,8 @@ const styles = StyleSheet.create({
   button: {
     marginTop: spacing.md,
     borderRadius: 12,
-    paddingVertical: spacing.md + 4,
+    paddingVertical: spacing.lg,
+    minHeight: 56, // Larger button for easier tapping
   },
   dividerContainer: {
     flexDirection: 'row',

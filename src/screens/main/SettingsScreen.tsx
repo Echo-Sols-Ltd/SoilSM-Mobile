@@ -14,9 +14,11 @@ import {useTranslation} from 'react-i18next';
 import {colors, typography, spacing} from '@theme';
 import {setStoredLanguage} from '@i18n';
 import i18n from '@i18n';
+import {useAuth} from '@contexts/AuthContext';
 
 export const SettingsScreen: React.FC = () => {
   const {t, i18n: i18nInstance} = useTranslation();
+  const {logout, user} = useAuth();
   const [notifications, setNotifications] = useState({
     taskReminders: true,
     communityUpdates: true,
@@ -41,6 +43,23 @@ export const SettingsScreen: React.FC = () => {
           style: 'destructive',
           onPress: () => {
             // Handle account deletion
+          },
+        },
+      ]
+    );
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      t('logout'),
+      t('logoutConfirm'),
+      [
+        {text: t('cancel'), style: 'cancel'},
+        {
+          text: t('logout'),
+          style: 'destructive',
+          onPress: async () => {
+            await logout();
           },
         },
       ]
@@ -74,6 +93,12 @@ export const SettingsScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('account')}</Text>
+          {user && (
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{user.name}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+            </View>
+          )}
           <SettingItem title={t('edit')} onPress={() => {}} />
           <SettingItem
             title={t('changePassword')}
@@ -238,6 +263,13 @@ export const SettingsScreen: React.FC = () => {
           <SettingItem title={t('termsOfService')} onPress={() => {}} />
           <SettingItem title={t('privacyPolicy')} onPress={() => {}} />
         </View>
+
+        {/* Logout Button */}
+        <View style={styles.logoutSection}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutText}>{t('logout')}</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -295,6 +327,38 @@ const styles = StyleSheet.create({
     ...typography.body1,
     color: colors.primary.main,
     fontWeight: '600',
+  },
+  userInfo: {
+    padding: spacing.md,
+    backgroundColor: colors.background.default,
+    borderRadius: 8,
+    marginBottom: spacing.sm,
+  },
+  userName: {
+    ...typography.h4,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  userEmail: {
+    ...typography.body2,
+    color: colors.text.secondary,
+  },
+  logoutSection: {
+    marginTop: spacing.xl,
+    marginBottom: spacing.xl,
+  },
+  logoutButton: {
+    backgroundColor: colors.error.main,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: 12,
+    alignItems: 'center',
+    minHeight: 56, // Larger button for easier tapping
+  },
+  logoutText: {
+    ...typography.button,
+    color: colors.text.white,
+    fontWeight: '700',
   },
 });
 

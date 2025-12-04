@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
@@ -17,6 +18,7 @@ import {colors, typography, spacing} from '@theme';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@navigation/types';
 import {EmojiIcon} from '@components';
+import {useAuth} from '@contexts/AuthContext';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -29,10 +31,12 @@ interface Props {
 
 export const LoginScreen: React.FC<Props> = ({navigation}) => {
   const {t} = useTranslation();
+  const {login} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validate = () => {
     const newErrors: {[key: string]: string} = {};
@@ -43,10 +47,20 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = () => {
-    if (validate()) {
-      // Navigate to main app
-      navigation.replace('Main');
+  const handleLogin = async () => {
+    if (!validate()) return;
+
+    setIsLoading(true);
+    try {
+      const result = await login(email, password);
+      if (!result.success) {
+        Alert.alert(t('error'), result.error || t('loginFailed'));
+      }
+      // Navigation will happen automatically via auth state change
+    } catch (error) {
+      Alert.alert(t('error'), t('loginFailed'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,6 +124,8 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
               onPress={handleLogin}
               variant="primary"
               style={styles.button}
+              loading={isLoading}
+              disabled={isLoading}
             />
           </View>
 
@@ -203,7 +219,8 @@ const styles = StyleSheet.create({
   button: {
     marginTop: spacing.md,
     borderRadius: 12,
-    paddingVertical: spacing.md + 4,
+    paddingVertical: spacing.lg,
+    minHeight: 56, // Larger button for easier tapping
   },
   dividerContainer: {
     flexDirection: 'row',

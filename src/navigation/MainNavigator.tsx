@@ -25,21 +25,29 @@ const MainTabs = () => {
         tabBarStyle: {
           borderTopWidth: 1,
           borderTopColor: colors.border.light,
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
+          paddingTop: 10,
+          paddingBottom: 10,
+          height: 70, // Increased height for better touch targets
+          backgroundColor: colors.background.paper,
         },
         tabBarLabelStyle: {
           ...typography.caption,
-          fontWeight: '500',
+          fontWeight: '600',
+          fontSize: 12,
+          marginTop: 4,
+        },
+        tabBarIconStyle: {
+          marginTop: 4,
         },
       }}>
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={{
-          tabBarLabel: 'Dashboard',
-          tabBarIcon: ({color}) => <Text style={{color, fontSize: 20}}>📊</Text>,
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color, focused}) => (
+            <Text style={{color, fontSize: focused ? 28 : 24}}>🏠</Text>
+          ),
         }}
       />
       <Tab.Screen
@@ -47,7 +55,9 @@ const MainTabs = () => {
         component={TasksScreen}
         options={{
           tabBarLabel: 'Tasks',
-          tabBarIcon: ({color}) => <Text style={{color, fontSize: 20}}>✓</Text>,
+          tabBarIcon: ({color, focused}) => (
+            <Text style={{color, fontSize: focused ? 28 : 24}}>✅</Text>
+          ),
         }}
       />
       <Tab.Screen
@@ -55,7 +65,9 @@ const MainTabs = () => {
         component={CommunityScreen}
         options={{
           tabBarLabel: 'Community',
-          tabBarIcon: ({color}) => <Text style={{color, fontSize: 20}}>👥</Text>,
+          tabBarIcon: ({color, focused}) => (
+            <Text style={{color, fontSize: focused ? 28 : 24}}>👥</Text>
+          ),
         }}
       />
       <Tab.Screen
@@ -63,7 +75,9 @@ const MainTabs = () => {
         component={SoilScreen}
         options={{
           tabBarLabel: 'Soil',
-          tabBarIcon: ({color}) => <Text style={{color, fontSize: 20}}>🌱</Text>,
+          tabBarIcon: ({color, focused}) => (
+            <Text style={{color, fontSize: focused ? 28 : 24}}>🌱</Text>
+          ),
         }}
       />
       <Tab.Screen
@@ -71,7 +85,9 @@ const MainTabs = () => {
         component={MessagesScreen}
         options={{
           tabBarLabel: 'Messages',
-          tabBarIcon: ({color}) => <Text style={{color, fontSize: 20}}>💬</Text>,
+          tabBarIcon: ({color, focused}) => (
+            <Text style={{color, fontSize: focused ? 28 : 24}}>💬</Text>
+          ),
         }}
       />
     </Tab.Navigator>

@@ -67,10 +67,10 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    borderRadius: 8,
+    borderRadius: 12, // More rounded for modern look
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
+    minHeight: 56, // Increased for better accessibility (WCAG recommends 44x44pt minimum, 56 is better for mobile)
   },
   primaryButton: {
     backgroundColor: colors.primary.main,

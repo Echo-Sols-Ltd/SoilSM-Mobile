@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: spacing.md,
     borderRadius: 12,
-    paddingVertical: spacing.md + 4,
+    paddingVertical: spacing.lg,
+    minHeight: 56, // Larger button for easier tapping
   },
 });

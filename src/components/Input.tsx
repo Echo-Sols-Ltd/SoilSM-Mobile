@@ -53,12 +53,13 @@ const styles = StyleSheet.create({
     ...typography.body1,
     borderWidth: 1,
     borderColor: colors.border.light,
-    borderRadius: 8,
+    borderRadius: 12, // More rounded for modern look
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.md, // Increased padding for better touch targets
     backgroundColor: colors.background.default,
     color: colors.text.primary,
-    minHeight: 48,
+    minHeight: 56, // Increased for better accessibility
+    fontSize: 16, // Ensure readable font size
   },
   inputError: {
     borderColor: colors.error.main,

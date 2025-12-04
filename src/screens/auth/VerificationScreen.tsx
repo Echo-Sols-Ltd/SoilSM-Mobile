@@ -65,6 +65,9 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
 
   const handleVerify = () => {
     if (codes.every(code => code !== '')) {
+      // For sign up flow, go to reset password (which will be skipped in actual implementation)
+      // For forgot password flow, go to reset password
+      // In a real app, you'd verify the code with the backend first
       navigation.navigate('ResetPassword');
     }
   };
@@ -237,6 +240,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     borderRadius: 12,
-    paddingVertical: spacing.md + 4,
+    paddingVertical: spacing.lg,
+    minHeight: 56, // Larger button for easier tapping
   },
 });
