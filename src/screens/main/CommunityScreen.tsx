@@ -8,12 +8,14 @@ import {
   StatusBar,
   TouchableOpacity,
   FlatList,
+  Image,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Card} from '@components/Card';
 import {Avatar, Badge, EmojiIcon} from '@components';
 import {colors, typography, spacing} from '@theme';
 import {format} from 'date-fns';
+import {Images} from '../../constants/images';
 
 interface Post {
   id: string;
@@ -24,7 +26,7 @@ interface Post {
   comments: number;
   shares: number;
   time: string;
-  image?: string;
+  image?: keyof typeof Images;
   liked?: boolean;
 }
 
@@ -40,6 +42,7 @@ export const CommunityScreen: React.FC = () => {
       shares: 3,
       time: '2 hours ago',
       liked: false,
+      image: 'farmImage1',
     },
     {
       id: '2',
@@ -50,6 +53,7 @@ export const CommunityScreen: React.FC = () => {
       shares: 2,
       time: '5 hours ago',
       liked: true,
+      image: 'organicFertilizers',
     },
     {
       id: '3',
@@ -60,6 +64,18 @@ export const CommunityScreen: React.FC = () => {
       shares: 7,
       time: '1 day ago',
       liked: false,
+      image: 'farmImage2',
+    },
+    {
+      id: '4',
+      userName: 'Sarah M.',
+      content: 'Beautiful morning in the fields! Our sustainable farming practices are paying off. 🌿',
+      likes: 45,
+      comments: 15,
+      shares: 9,
+      time: '2 days ago',
+      liked: false,
+      image: 'farmImage3',
     },
   ]);
 
@@ -111,12 +127,13 @@ export const CommunityScreen: React.FC = () => {
             {/* Post Content */}
             <Text style={styles.postContent}>{item.content}</Text>
 
-            {/* Post Image Placeholder */}
+            {/* Post Image */}
             {item.image && (
-              <View style={styles.imagePlaceholder}>
-                <EmojiIcon emoji="🖼️" size={40} />
-                <Text style={styles.imageText}>{t('image')}</Text>
-              </View>
+              <Image
+                source={Images[item.image]}
+                style={styles.postImage}
+                resizeMode="cover"
+              />
             )}
 
             {/* Post Actions */}
@@ -227,21 +244,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     lineHeight: 22,
   },
-  imagePlaceholder: {
+  postImage: {
     width: '100%',
     height: 200,
-    backgroundColor: colors.background.paper,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  imageText: {
-    ...typography.caption,
-    color: colors.text.secondary,
-    marginTop: spacing.xs,
+    backgroundColor: colors.background.paper,
   },
   postActions: {
     flexDirection: 'row',

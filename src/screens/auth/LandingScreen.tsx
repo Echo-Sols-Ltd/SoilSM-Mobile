@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
+  Image,
+  ImageBackground,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useTranslation} from 'react-i18next';
@@ -14,6 +16,7 @@ import {colors, typography, spacing} from '@theme';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@navigation/types';
 import {EmojiIcon} from '@components';
+import {Images} from '../../constants/images';
 
 const {width, height} = Dimensions.get('window');
 
@@ -47,18 +50,13 @@ export const LandingScreen: React.FC<Props> = ({navigation}) => {
 
           {/* Illustration Section */}
           <View style={styles.illustrationContainer}>
-            <View style={styles.illustration}>
-              <EmojiIcon emoji="🌾" size={120} />
-              <View style={styles.floatingIcon1}>
-                <EmojiIcon emoji="💧" size={40} />
-              </View>
-              <View style={styles.floatingIcon2}>
-                <EmojiIcon emoji="☀️" size={40} />
-              </View>
-              <View style={styles.floatingIcon3}>
-                <EmojiIcon emoji="🌿" size={40} />
-              </View>
-            </View>
+            <ImageBackground
+              source={Images.agricultureVietnam}
+              style={styles.heroImage}
+              imageStyle={styles.heroImageStyle}
+              resizeMode="cover">
+              <View style={styles.imageOverlay} />
+            </ImageBackground>
           </View>
 
           {/* Features */}
@@ -142,30 +140,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
     marginVertical: spacing.xl,
   },
-  illustration: {
-    width: 200,
-    height: 200,
+  heroImage: {
+    width: width * 0.85,
+    height: height * 0.35,
+    borderRadius: 20,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
   },
-  floatingIcon1: {
-    position: 'absolute',
-    top: 20,
-    right: 10,
+  heroImageStyle: {
+    borderRadius: 20,
   },
-  floatingIcon2: {
-    position: 'absolute',
-    bottom: 20,
-    left: 10,
-  },
-  floatingIcon3: {
-    position: 'absolute',
-    top: 50,
-    left: -20,
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(46, 125, 50, 0.3)',
+    borderRadius: 20,
   },
   featuresContainer: {
     flexDirection: 'row',
