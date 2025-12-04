@@ -7,6 +7,8 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
@@ -14,6 +16,7 @@ import {Input} from '@components/Input';
 import {colors, typography, spacing} from '@theme';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@navigation/types';
+import {EmojiIcon} from '@components';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -29,11 +32,13 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const validate = () => {
     const newErrors: {[key: string]: string} = {};
-    if (!email.trim()) newErrors.email = 'Email is required';
-    if (!password.trim()) newErrors.password = 'Password is required';
+    if (!email.trim()) newErrors.email = t('emailRequired');
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = t('invalidEmail');
+    if (!password.trim()) newErrors.password = t('passwordRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -48,55 +53,94 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background.default} />
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>{t('login')}</Text>
-        <Input
-          label={t('email')}
-          value={email}
-          onChangeText={setEmail}
-          error={errors.email}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Input
-          label={t('password')}
-          value={password}
-          onChangeText={setPassword}
-          error={errors.password}
-          secureTextEntry
-        />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ForgotPassword')}
-          style={styles.forgotContainer}>
-          <Text style={styles.forgotText}>{t('forgotPassword')}</Text>
-        </TouchableOpacity>
-        <Button
-          title={t('login')}
-          onPress={handleLogin}
-          variant="primary"
-          style={styles.button}
-        />
-        <View style={styles.socialContainer}>
-          <Text style={styles.socialText}>{t('or')} {t('login')} {t('with')}</Text>
-          <View style={styles.socialButtons}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}>
+              <EmojiIcon emoji="←" size={24} />
+            </TouchableOpacity>
+            <View style={styles.logoContainer}>
+              <EmojiIcon emoji="🌱" size={60} />
+            </View>
+            <Text style={styles.title}>{t('login')}</Text>
+            <Text style={styles.subtitle}>{t('welcomeBack')}</Text>
+          </View>
+
+          {/* Form */}
+          <View style={styles.form}>
+            <Input
+              label={t('email')}
+              value={email}
+              onChangeText={setEmail}
+              error={errors.email}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholder={t('enterEmail')}
+            />
+            <View>
+              <Input
+                label={t('password')}
+                value={password}
+                onChangeText={setPassword}
+                error={errors.password}
+                secureTextEntry={!showPassword}
+                placeholder={t('enterPassword')}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeButton}>
+                <EmojiIcon emoji={showPassword ? '👁️' : '👁️‍🗨️'} size={20} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}
+              style={styles.forgotContainer}>
+              <Text style={styles.forgotText}>{t('forgotPassword')}</Text>
+            </TouchableOpacity>
+            <Button
+              title={t('login')}
+              onPress={handleLogin}
+              variant="primary"
+              style={styles.button}
+            />
+          </View>
+
+          {/* Divider */}
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>{t('or')}</Text>
+            <View style={styles.divider} />
+          </View>
+
+          {/* Social Login */}
+          <View style={styles.socialContainer}>
             <TouchableOpacity style={styles.socialButton}>
-              <Text style={styles.socialButtonText}>G</Text>
+              <EmojiIcon emoji="🔵" size={24} />
+              <Text style={styles.socialButtonText}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialButton}>
-              <Text style={styles.socialButtonText}>f</Text>
+              <EmojiIcon emoji="🔷" size={24} />
+              <Text style={styles.socialButtonText}>Facebook</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SignUp')}
-          style={styles.linkContainer}>
-          <Text style={styles.linkText}>
-            {t('dontHaveAccount')} {t('signUp')}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+
+          {/* Sign Up Link */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>{t('dontHaveAccount')} </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+              <Text style={styles.footerLink}>{t('signUp')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -106,61 +150,112 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.default,
   },
+  keyboardView: {
+    flex: 1,
+  },
   scrollContent: {
     padding: spacing.lg,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xl,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  logoContainer: {
+    marginBottom: spacing.md,
   },
   title: {
-    ...typography.h2,
+    ...typography.h1,
     color: colors.primary.main,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.xs,
+    fontWeight: '800',
+  },
+  subtitle: {
+    ...typography.body1,
+    color: colors.text.secondary,
     textAlign: 'center',
+  },
+  form: {
+    marginTop: spacing.lg,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: spacing.md,
+    top: 40,
+    padding: spacing.xs,
   },
   forgotContainer: {
     alignSelf: 'flex-end',
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
+    marginTop: -spacing.sm,
   },
   forgotText: {
     ...typography.body2,
     color: colors.primary.main,
+    fontWeight: '600',
   },
   button: {
     marginTop: spacing.md,
+    borderRadius: 12,
+    paddingVertical: spacing.md + 4,
   },
-  socialContainer: {
-    marginTop: spacing.xl,
+  dividerContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: spacing.xl,
   },
-  socialText: {
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border.light,
+  },
+  dividerText: {
     ...typography.body2,
     color: colors.text.secondary,
-    marginBottom: spacing.md,
+    marginHorizontal: spacing.md,
   },
-  socialButtons: {
+  socialContainer: {
     flexDirection: 'row',
     gap: spacing.md,
+    marginBottom: spacing.xl,
   },
   socialButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors.background.paper,
-    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.md,
+    borderRadius: 12,
+    backgroundColor: colors.background.paper,
     borderWidth: 1,
     borderColor: colors.border.light,
+    gap: spacing.sm,
   },
   socialButtonText: {
-    ...typography.h3,
-    color: colors.primary.main,
+    ...typography.body2,
+    color: colors.text.primary,
+    fontWeight: '600',
   },
-  linkContainer: {
-    marginTop: spacing.lg,
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: spacing.lg,
   },
-  linkText: {
+  footerText: {
+    ...typography.body2,
+    color: colors.text.secondary,
+  },
+  footerLink: {
     ...typography.body2,
     color: colors.primary.main,
+    fontWeight: '700',
   },
 });
 
