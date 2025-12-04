@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
 } from 'react-native';
+import Animated, {FadeInUp, FadeIn, withSpring, useSharedValue, useAnimatedStyle, withTiming} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Card} from '@components/Card';
 import {Avatar, Badge, EmojiIcon} from '@components';
@@ -113,8 +114,9 @@ export const CommunityScreen: React.FC = () => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <Card variant="elevated" style={styles.postCard}>
+        renderItem={({item, index}) => (
+          <Animated.View entering={FadeInUp.delay(index * 80).duration(400).springify()}>
+            <Card variant="elevated" style={styles.postCard}>
             {/* Post Header */}
             <View style={styles.postHeader}>
               <Avatar name={item.userName} size={48} />
@@ -133,6 +135,7 @@ export const CommunityScreen: React.FC = () => {
                 source={Images[item.image]}
                 style={styles.postImage}
                 resizeMode="cover"
+                blurRadius={0}
               />
             )}
 
@@ -167,6 +170,7 @@ export const CommunityScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
           </Card>
+          </Animated.View>
         )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
@@ -246,10 +250,11 @@ const styles = StyleSheet.create({
   },
   postImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 12,
+    height: 220,
+    borderRadius: 16,
     marginBottom: spacing.md,
     backgroundColor: colors.background.paper,
+    overflow: 'hidden',
   },
   postActions: {
     flexDirection: 'row',

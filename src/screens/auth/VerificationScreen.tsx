@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import Animated, {FadeInDown, useSharedValue, useAnimatedStyle, withTiming, withSpring, Easing} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
 import {colors, typography, spacing} from '@theme';
@@ -91,7 +92,7 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <Animated.View style={[styles.header, animatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -104,10 +105,10 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
             </View>
             <Text style={styles.title}>{t('verification')}</Text>
             <Text style={styles.subtitle}>{t('enterCode')}</Text>
-          </View>
+          </Animated.View>
 
           {/* Code Inputs */}
-          <View style={styles.codeContainer}>
+          <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.codeContainer}>
             {codes.map((code, index) => (
               <TextInput
                 key={index}
@@ -125,10 +126,10 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
                 selectTextOnFocus
               />
             ))}
-          </View>
+          </Animated.View>
 
           {/* Resend */}
-          <View style={styles.resendContainer}>
+          <Animated.View entering={FadeInDown.delay(400).duration(400).springify()} style={styles.resendContainer}>
             {timer > 0 ? (
               <Text style={styles.timerText}>
                 {t('resendCodeIn')} {timer}s
@@ -138,16 +139,18 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
                 <Text style={styles.resendText}>{t('resendCode')}</Text>
               </TouchableOpacity>
             )}
-          </View>
+          </Animated.View>
 
           {/* Verify Button */}
-          <Button
+          <Animated.View entering={FadeInDown.delay(600).duration(400).springify()}>
+            <Button
             title={t('verify')}
             onPress={handleVerify}
             variant="primary"
             style={styles.button}
             disabled={!allFilled}
           />
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

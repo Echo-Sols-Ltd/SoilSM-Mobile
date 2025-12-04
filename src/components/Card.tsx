@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
     shadowColor: colors.shadow.medium,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 10,
+    backgroundColor: colors.background.default,
   },
   outlined: {
     borderWidth: 1,

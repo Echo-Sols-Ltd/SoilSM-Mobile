@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import Animated, {FadeInDown, FadeInRight, withSpring, useSharedValue, useAnimatedStyle, withTiming} from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 import {useTranslation} from 'react-i18next';
 import {Card} from '@components/Card';
@@ -166,13 +167,15 @@ export const SoilScreen: React.FC = () => {
         {/* Soil Metrics */}
         <View style={styles.metricsGrid}>
           {soilMetrics.map((metric, index) => (
-            <Card
+            <Animated.View
               key={index}
-              variant="elevated"
-              style={[
-                styles.metricCard,
-                {borderLeftWidth: 4, borderLeftColor: getStatusColor(metric.status)},
-              ]}>
+              entering={FadeInDown.delay(index * 100).duration(400).springify()}>
+              <Card
+                variant="elevated"
+                style={[
+                  styles.metricCard,
+                  {borderLeftWidth: 4, borderLeftColor: getStatusColor(metric.status)},
+                ]}>
               <View style={styles.metricHeader}>
                 <EmojiIcon emoji={metric.icon} size={28} />
                 <Badge
@@ -193,6 +196,7 @@ export const SoilScreen: React.FC = () => {
               </Text>
               <Text style={styles.metricLabel}>{metric.label}</Text>
             </Card>
+            </Animated.View>
           ))}
         </View>
 
@@ -230,12 +234,14 @@ export const SoilScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           {reports.map((report, index) => (
-            <TouchableOpacity
+            <Animated.View
               key={report.id}
-              style={[
-                styles.reportItem,
-                index < reports.length - 1 && styles.reportItemBorder,
-              ]}>
+              entering={FadeInRight.delay(index * 80).duration(400).springify()}>
+              <TouchableOpacity
+                style={[
+                  styles.reportItem,
+                  index < reports.length - 1 && styles.reportItemBorder,
+                ]}>
               <View style={styles.reportIcon}>
                 <EmojiIcon emoji="📄" size={24} />
               </View>
@@ -245,6 +251,7 @@ export const SoilScreen: React.FC = () => {
               </View>
               <EmojiIcon emoji="→" size={20} />
             </TouchableOpacity>
+            </Animated.View>
           ))}
         </Card>
 
@@ -255,8 +262,9 @@ export const SoilScreen: React.FC = () => {
             <Badge label={recommendations.length.toString()} size="small" />
           </View>
           {recommendations.map((rec, index) => (
-            <View
+            <Animated.View
               key={rec.id}
+              entering={FadeInDown.delay(index * 100).duration(400).springify()}
               style={[
                 styles.recommendationItem,
                 index < recommendations.length - 1 && styles.recommendationItemBorder,
@@ -273,7 +281,7 @@ export const SoilScreen: React.FC = () => {
                   style={styles.recommendationBadge}
                 />
               </View>
-            </View>
+            </Animated.View>
           ))}
         </Card>
       </ScrollView>

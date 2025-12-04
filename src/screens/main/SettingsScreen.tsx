@@ -91,7 +91,7 @@ export const SettingsScreen: React.FC = () => {
         <Text style={styles.headerText}>{t('settings')}</Text>
       </View>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
-        <View style={styles.section}>
+        <Animated.View entering={FadeInDown.delay(0).duration(400).springify()} style={styles.section}>
           <Text style={styles.sectionTitle}>{t('account')}</Text>
           {user && (
             <View style={styles.userInfo}>
@@ -111,9 +111,9 @@ export const SettingsScreen: React.FC = () => {
               <Text style={styles.deleteText}>{t('delete')}</Text>
             }
           />
-        </View>
+        </Animated.View>
 
-        <View style={styles.section}>
+        <Animated.View entering={FadeInDown.delay(100).duration(400).springify()} style={styles.section}>
           <Text style={styles.sectionTitle}>{t('notifications')}</Text>
           <SettingItem
             title={t('taskReminders')}
@@ -214,9 +214,9 @@ export const SettingsScreen: React.FC = () => {
             }
           />
           <SettingItem title={t('blockedUsers')} onPress={() => {}} />
-        </View>
+        </Animated.View>
 
-        <View style={styles.section}>
+        <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.section}>
           <Text style={styles.sectionTitle}>{t('language')}</Text>
           <SettingItem
             title={t('english')}
@@ -269,7 +269,7 @@ export const SettingsScreen: React.FC = () => {
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>{t('logout')}</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );

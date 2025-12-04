@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
-import {StatusBar, View, ActivityIndicator, StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import {AppNavigator} from '@navigation';
 import {AuthProvider, useAuth} from '@contexts/AuthContext';
 import {getStoredLanguage} from '@i18n';
 import i18n from '@i18n';
-import {colors} from '@theme';
+import {LoadingSpinner} from '@components';
 import 'react-native-gesture-handler';
 
 const AppContent: React.FC = () => {
@@ -19,11 +19,7 @@ const AppContent: React.FC = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary.main} />
-      </View>
-    );
+    return <LoadingSpinner fullScreen size="large" />;
   }
 
   return <AppNavigator />;
@@ -38,14 +34,6 @@ const App: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background.default,
-  },
-});
 
 export default App;
 

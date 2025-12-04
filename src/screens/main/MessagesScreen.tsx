@@ -73,8 +73,12 @@ export const MessagesScreen: React.FC = () => {
           data={messages}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.messagesList}
-          renderItem={({item}) => (
-            <View
+          renderItem={({item, index}) => (
+            <Animated.View
+              entering={item.sender === 'me' 
+                ? FadeInRight.delay(index * 50).duration(300).springify()
+                : FadeInLeft.delay(index * 50).duration(300).springify()}
+              layout={Layout.springify()}
               style={[
                 styles.messageBubble,
                 item.sender === 'me' ? styles.myMessage : styles.otherMessage,
@@ -93,7 +97,7 @@ export const MessagesScreen: React.FC = () => {
                 ]}>
                 {item.time}
               </Text>
-            </View>
+            </Animated.View>
           )}
         />
         <View style={styles.inputContainer}>
@@ -122,10 +126,11 @@ export const MessagesScreen: React.FC = () => {
       <FlatList
         data={chats}
         keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={styles.chatItem}
-            onPress={() => setSelectedChat(item.id)}>
+        renderItem={({item, index}) => (
+          <Animated.View entering={FadeInRight.delay(index * 80).duration(400).springify()}>
+            <TouchableOpacity
+              style={styles.chatItem}
+              onPress={() => setSelectedChat(item.id)}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
                 {item.name.charAt(0).toUpperCase()}
@@ -148,6 +153,7 @@ export const MessagesScreen: React.FC = () => {
               </View>
             </View>
           </TouchableOpacity>
+          </Animated.View>
         )}
       />
     </SafeAreaView>

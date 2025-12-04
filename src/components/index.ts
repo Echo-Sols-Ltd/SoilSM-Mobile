@@ -4,4 +4,5 @@ export {Card} from './Card';
 export {AppIcon, EmojiIcon} from './Icon';
 export {Badge} from './Badge';
 export {Avatar} from './Avatar';
+export {LoadingSpinner} from './LoadingSpinner';
 

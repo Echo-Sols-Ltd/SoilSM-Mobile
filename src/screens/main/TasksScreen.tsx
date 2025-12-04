@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import Animated, {FadeInDown, FadeInRight, Layout} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Card} from '@components/Card';
 import {Button} from '@components/Button';
@@ -178,11 +179,14 @@ export const TasksScreen: React.FC = () => {
         data={tasks}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
-        renderItem={({item}) => (
-          <Card style={[styles.taskCard, item.completed && styles.completedTask]}>
-            <TouchableOpacity
-              onPress={() => toggleTask(item.id)}
-              style={styles.taskContent}>
+        renderItem={({item, index}) => (
+          <Animated.View
+            entering={FadeInDown.delay(index * 100).duration(400).springify()}
+            layout={Layout.springify()}>
+            <Card style={[styles.taskCard, item.completed && styles.completedTask]}>
+              <TouchableOpacity
+                onPress={() => toggleTask(item.id)}
+                style={styles.taskContent}>
               <View style={styles.taskInfo}>
                 <Text
                   style={[
@@ -215,6 +219,7 @@ export const TasksScreen: React.FC = () => {
               />
             </TouchableOpacity>
           </Card>
+          </Animated.View>
         )}
       />
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import Animated, {useSharedValue, useAnimatedStyle, withTiming, withSpring, Easing} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
 import {Input} from '@components/Input';
@@ -77,7 +78,7 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <Animated.View style={[styles.header, animatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -90,10 +91,10 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
             </View>
             <Text style={styles.title}>{t('resetPassword')}</Text>
             <Text style={styles.subtitle}>{t('createNewPassword')}</Text>
-          </View>
+          </Animated.View>
 
           {/* Form */}
-          <View style={styles.form}>
+          <Animated.View style={[styles.form, animatedStyle]}>
             <View>
               <Input
                 label={t('newPassword')}

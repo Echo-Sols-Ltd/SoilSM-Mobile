@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
+import Animated, {FadeInDown, useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing, withSpring} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
 import {Input} from '@components/Input';
@@ -38,6 +39,28 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-20);
+  const formOpacity = useSharedValue(0);
+  const formTranslateY = useSharedValue(20);
+
+  useEffect(() => {
+    headerOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
+    headerTranslateY.value = withSpring(0, {damping: 12, stiffness: 100});
+    formOpacity.value = withDelay(200, withTiming(1, {duration: 500}));
+    formTranslateY.value = withDelay(200, withSpring(0, {damping: 12, stiffness: 100}));
+  }, []);
+
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+    transform: [{translateY: headerTranslateY.value}],
+  }));
+
+  const formAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: formOpacity.value,
+    transform: [{translateY: formTranslateY.value}],
+  }));
 
   const validate = () => {
     const newErrors: {[key: string]: string} = {};
@@ -85,7 +108,7 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <Animated.View style={[styles.header, headerAnimatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -96,10 +119,10 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
             </View>
             <Text style={styles.title}>{t('signUp')}</Text>
             <Text style={styles.subtitle}>{t('createAccount')}</Text>
-          </View>
+          </Animated.View>
 
           {/* Form */}
-          <View style={styles.form}>
+          <Animated.View style={[styles.form, formAnimatedStyle]}>
             <Input
               label={t('name')}
               value={name}
