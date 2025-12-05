@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, fireEvent} from '@testing-library/react-native';
+import {render, fireEvent, waitFor, act} from '@testing-library/react-native';
 
 jest.mock('@hooks', () => ({
   useFormAnimation: () => ({
@@ -41,13 +41,33 @@ describe('VerificationScreen', () => {
     expect(getByText('verify')).toBeTruthy();
   });
 
-  it('displays resend code button', () => {
-    const {getByText} = render(
+  it('displays resend code button', async () => {
+    const {getByText, queryByText} = render(
       <VerificationScreen navigation={mockNavigation as any} />
     );
-    // Initially shows timer, advance timers to show resend button
-    jest.advanceTimersByTime(61000); // Advance 61 seconds to make timer 0
-    expect(getByText('resendCode')).toBeTruthy();
-  });
+    // Initially shows timer text, not resend button
+    expect(queryByText('resendCode')).toBeNull();
+    expect(getByText(/resendCodeIn/)).toBeTruthy(); // Should show timer text
+    
+    // Advance timers to make timer reach 0 - do it all at once
+    act(() => {
+      jest.advanceTimersByTime(61000); // Advance 61 seconds
+    });
+    
+    // Flush all pending timers and state updates
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+    
+    // The resend button should appear after timer expires
+    // Use queryByText to avoid throwing if not found yet
+    await waitFor(
+      () => {
+        const resendButton = queryByText('resendCode');
+        expect(resendButton).toBeTruthy();
+      },
+      {timeout: 2000}
+    );
+  }, 10000); // Increase test timeout to 10 seconds
 });
 

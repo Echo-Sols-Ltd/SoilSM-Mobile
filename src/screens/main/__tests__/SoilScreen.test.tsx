@@ -16,8 +16,9 @@ describe('SoilScreen', () => {
   });
 
   it('displays soil metrics', () => {
-    const {getByText} = render(<SoilScreen />);
-    expect(getByText('phLevel')).toBeTruthy();
+    const {getAllByText} = render(<SoilScreen />);
+    // There might be multiple instances of 'phLevel' text
+    expect(getAllByText('phLevel').length).toBeGreaterThan(0);
   });
 
   it('displays soil reports section', () => {
