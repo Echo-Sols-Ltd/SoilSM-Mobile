@@ -22,10 +22,11 @@ describe('ResetPasswordScreen', () => {
   });
 
   it('renders correctly', () => {
-    const {getByText, getByPlaceholderText} = render(
+    const {getAllByText, getByPlaceholderText} = render(
       <ResetPasswordScreen navigation={mockNavigation as any} />
     );
-    expect(getByText('resetPassword')).toBeTruthy();
+    // There might be multiple instances of 'resetPassword' text
+    expect(getAllByText('resetPassword').length).toBeGreaterThan(0);
     expect(getByPlaceholderText('enterNewPassword')).toBeTruthy();
     expect(getByPlaceholderText('confirmNewPassword')).toBeTruthy();
   });

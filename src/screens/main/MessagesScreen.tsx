@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import Animated, {FadeInRight, FadeInLeft, Layout} from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {colors, typography, spacing} from '@theme';
 

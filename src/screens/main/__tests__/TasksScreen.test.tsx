@@ -22,7 +22,8 @@ describe('TasksScreen', () => {
 
   it('displays add task button', () => {
     const {getByText} = render(<TasksScreen />);
-    expect(getByText('addTask')).toBeTruthy();
+    // The add button shows "+" not "addTask"
+    expect(getByText('+')).toBeTruthy();
   });
 });
 

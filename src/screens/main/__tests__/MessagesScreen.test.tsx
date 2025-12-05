@@ -1,5 +1,5 @@
 import React from 'react';
-import {render} from '@testing-library/react-native';
+import {render, fireEvent} from '@testing-library/react-native';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
@@ -20,8 +20,12 @@ describe('MessagesScreen', () => {
     expect(getByText('Support Team')).toBeTruthy();
   });
 
-  it('displays message input placeholder', () => {
-    const {getByPlaceholderText} = render(<MessagesScreen />);
+  it('displays message input placeholder when chat is selected', () => {
+    const {getByText, getByPlaceholderText} = render(<MessagesScreen />);
+    // Click on a chat to select it
+    const chatItem = getByText('Support Team');
+    fireEvent.press(chatItem);
+    // Now the message input should be visible
     expect(getByPlaceholderText('typeMessage')).toBeTruthy();
   });
 });

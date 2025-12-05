@@ -45,6 +45,8 @@ describe('VerificationScreen', () => {
     const {getByText} = render(
       <VerificationScreen navigation={mockNavigation as any} />
     );
+    // Initially shows timer, advance timers to show resend button
+    jest.advanceTimersByTime(61000); // Advance 61 seconds to make timer 0
     expect(getByText('resendCode')).toBeTruthy();
   });
 });

@@ -1,7 +1,19 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 
-jest.mock('@contexts/AuthContext');
+// Mock modules before importing components
+jest.mock('@contexts/AuthContext', () => ({
+  useAuth: jest.fn(() => ({
+    user: {id: '1', name: 'Test User', email: 'test@example.com'},
+    isLoading: false,
+    isAuthenticated: true,
+    login: jest.fn(() => Promise.resolve({success: true})),
+    signUp: jest.fn(() => Promise.resolve({success: true})),
+    logout: jest.fn(() => Promise.resolve()),
+    checkAuth: jest.fn(() => Promise.resolve()),
+  })),
+  AuthProvider: ({children}: {children: React.ReactNode}) => children,
+}));
 jest.mock('@i18n', () => ({
   setStoredLanguage: jest.fn(() => Promise.resolve()),
   default: {
