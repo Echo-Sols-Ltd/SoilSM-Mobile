@@ -21,8 +21,9 @@ describe('CommunityScreen', () => {
   });
 
   it('displays share button', () => {
-    const {getByText} = render(<CommunityScreen />);
-    expect(getByText('share')).toBeTruthy();
+    const {getAllByText} = render(<CommunityScreen />);
+    // There might be multiple instances of 'share' text (one per post)
+    expect(getAllByText('share').length).toBeGreaterThan(0);
   });
 });
 

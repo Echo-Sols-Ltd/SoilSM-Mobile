@@ -18,11 +18,6 @@ const mockNavigation = {
 describe('VerificationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   it('renders correctly', () => {
@@ -37,11 +32,12 @@ describe('VerificationScreen', () => {
     const {getByText} = render(
       <VerificationScreen navigation={mockNavigation as any} />
     );
-    // Code inputs should be rendered
+    // Code inputs should be rendered - verify button should be present
     expect(getByText('verify')).toBeTruthy();
   });
 
   it('displays resend code button', async () => {
+    jest.useFakeTimers();
     const {getByText, queryByText} = render(
       <VerificationScreen navigation={mockNavigation as any} />
     );
@@ -49,25 +45,20 @@ describe('VerificationScreen', () => {
     expect(queryByText('resendCode')).toBeNull();
     expect(getByText(/resendCodeIn/)).toBeTruthy(); // Should show timer text
     
-    // Advance timers to make timer reach 0 - do it all at once
+    // Advance timers to make timer reach 0
     act(() => {
       jest.advanceTimersByTime(61000); // Advance 61 seconds
     });
     
-    // Flush all pending timers and state updates
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-    
     // The resend button should appear after timer expires
-    // Use queryByText to avoid throwing if not found yet
     await waitFor(
       () => {
-        const resendButton = queryByText('resendCode');
-        expect(resendButton).toBeTruthy();
+        expect(getByText('resendCode')).toBeTruthy();
       },
       {timeout: 2000}
     );
+    
+    jest.useRealTimers();
   }, 10000); // Increase test timeout to 10 seconds
 });
 

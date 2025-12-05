@@ -14,6 +14,7 @@ module.exports = {
     '^@i18n$': '<rootDir>/src/i18n',
     '^@theme$': '<rootDir>/src/theme',
     '^@contexts$': '<rootDir>/src/contexts',
+    '^@contexts/(.*)$': '<rootDir>/src/contexts/$1',
     '^@hooks$': '<rootDir>/src/hooks',
   },
   collectCoverageFrom: [

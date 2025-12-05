@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const useAuth = jest.fn(() => ({
   user: null,
   isLoading: false,

@@ -327,7 +327,6 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
-
 // Mock theme
 jest.mock('@theme', () => ({
   colors: {
