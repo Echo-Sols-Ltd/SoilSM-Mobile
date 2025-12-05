@@ -119,6 +119,7 @@ export default {
   passwordRequired: 'Le mot de passe est requis',
   nameRequired: 'Le nom est requis',
   confirmPasswordRequired: 'La confirmation du mot de passe est requise',
+  fieldRequired: 'Ce champ est requis',
   invalidEmail: 'Adresse email invalide',
   passwordMinLength: 'Le mot de passe doit contenir au moins 6 caractères',
   passwordsDoNotMatch: 'Les mots de passe ne correspondent pas',

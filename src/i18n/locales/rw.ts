@@ -119,6 +119,7 @@ export default {
   passwordRequired: 'Ijambo ry\'ibanga rirakenerwa',
   nameRequired: 'Amazina arakenerwa',
   confirmPasswordRequired: 'Kwemeza ijambo ry\'ibanga birakenerwa',
+  fieldRequired: 'Iki gikoresho gikenewe',
   invalidEmail: 'Aderesi y\'imeyili itari yo',
   passwordMinLength: 'Ijambo ry\'ibanga rigomba kugira inyuguti nke cyangwa zirenga 6',
   passwordsDoNotMatch: 'Amajambo y\'ibanga ntacyo ahuza',

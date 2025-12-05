@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import Animated, {FadeInDown, useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing, withSpring} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@components/Button';
 import {Input} from '@components/Input';
@@ -20,6 +20,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '@navigation/types';
 import {EmojiIcon} from '@components';
 import {useAuth} from '@contexts/AuthContext';
+import {useFormAnimation} from '@hooks';
+import {validateForm, ValidationSchema} from '@utils/validation';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -36,45 +38,19 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {headerAnimatedStyle, formAnimatedStyle} = useFormAnimation();
 
-  const headerOpacity = useSharedValue(0);
-  const headerTranslateY = useSharedValue(-20);
-  const formOpacity = useSharedValue(0);
-  const formTranslateY = useSharedValue(20);
-
-  useEffect(() => {
-    headerOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
-    headerTranslateY.value = withSpring(0, {damping: 12, stiffness: 100});
-    formOpacity.value = withDelay(200, withTiming(1, {duration: 500}));
-    formTranslateY.value = withDelay(200, withSpring(0, {damping: 12, stiffness: 100}));
-  }, []);
-
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: headerOpacity.value,
-    transform: [{translateY: headerTranslateY.value}],
-  }));
-
-  const formAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: formOpacity.value,
-    transform: [{translateY: formTranslateY.value}],
-  }));
+  const validationSchema: ValidationSchema = {
+    name: {required: true},
+    email: {required: true, email: true},
+    password: {required: true, minLength: 6},
+  };
 
   const validate = () => {
-    const newErrors: {[key: string]: string} = {};
-    if (!name.trim()) newErrors.name = t('nameRequired');
-    if (!email.trim()) {
-      newErrors.email = t('emailRequired');
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = t('invalidEmail');
-    }
-    if (!password.trim()) {
-      newErrors.password = t('passwordRequired');
-    } else if (password.length < 6) {
-      newErrors.password = t('passwordMinLength');
-    }
+    const newErrors = validateForm({name, email, password}, validationSchema, t);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

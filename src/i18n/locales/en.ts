@@ -119,6 +119,7 @@ export default {
   passwordRequired: 'Password is required',
   nameRequired: 'Name is required',
   confirmPasswordRequired: 'Confirm password is required',
+  fieldRequired: 'This field is required',
   invalidEmail: 'Invalid email address',
   passwordMinLength: 'Password must be at least 6 characters',
   passwordsDoNotMatch: 'Passwords do not match',
