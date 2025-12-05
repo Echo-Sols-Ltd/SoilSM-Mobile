@@ -1,28 +1,128 @@
 import '@testing-library/jest-native/extend-expect';
 import 'react-native-gesture-handler/jestSetup';
 
-// Mock react-native-reanimated
+// Mock react-native-reanimated with better support for FlatList and FlatList items
 jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-  Reanimated.default.call = () => {};
-  Reanimated.FadeInRight = {
-    delay: () => ({duration: () => ({springify: () => ({})})}),
+  const React = require('react');
+  const {View, Text} = require('react-native');
+  
+  const createAnimatedComponent = (Component: any) => {
+    const AnimatedComponent = React.forwardRef((props: any, ref: any) => {
+      // Extract entering, exiting, layout props and ignore them for testing
+      const {entering, exiting, layout, ...restProps} = props;
+      return <Component ref={ref} {...restProps} />;
+    });
+    AnimatedComponent.displayName = `Animated(${Component.displayName || Component.name || 'Component'})`;
+    return AnimatedComponent;
   };
-  Reanimated.FadeInLeft = {
-    delay: () => ({duration: () => ({springify: () => ({})})}),
+
+  // Create a mock FlatList that properly renders items
+  const createMockFlatList = () => {
+    const RN = require('react-native');
+    return React.forwardRef((props: any, ref: any) => {
+      const {data = [], renderItem, keyExtractor, ListEmptyComponent, ListHeaderComponent, ListFooterComponent, ...restProps} = props;
+      
+      const children = data.map((item: any, index: number) => {
+        const key = keyExtractor ? keyExtractor(item, index) : `item-${index}`;
+        const element = renderItem ? renderItem({item, index, separators: {highlight: () => {}, unhighlight: () => {}, updateProps: () => {}}}) : null;
+        return element ? React.cloneElement(element, {key}) : null;
+      });
+      
+      return React.createElement(
+        RN.ScrollView,
+        {ref, ...restProps, testID: props.testID},
+        ListHeaderComponent && React.createElement(ListHeaderComponent),
+        ...children,
+        ListFooterComponent && React.createElement(ListFooterComponent),
+        data.length === 0 && ListEmptyComponent && React.createElement(ListEmptyComponent)
+      );
+    });
   };
-  Reanimated.FadeInDown = {
-    delay: () => ({duration: () => ({springify: () => ({})})}),
+
+  const Reanimated = {
+    default: {
+      View: createAnimatedComponent(View),
+      Text: createAnimatedComponent(Text),
+      Image: createAnimatedComponent(require('react-native').Image),
+      ScrollView: createAnimatedComponent(require('react-native').ScrollView),
+      FlatList: MockFlatList,
+      call: () => {},
+    },
+    View: createAnimatedComponent(View),
+    Text: createAnimatedComponent(Text),
+    Image: createAnimatedComponent(require('react-native').Image),
+    ScrollView: createAnimatedComponent(require('react-native').ScrollView),
+    FlatList: MockFlatList,
+    createAnimatedComponent,
+    useSharedValue: (init: any) => ({value: init}),
+    useAnimatedStyle: (fn: any) => ({}),
+    withTiming: (value: any) => value,
+    withSpring: (value: any) => value,
+    withSequence: (...args: any[]) => args[args.length - 1],
+    withRepeat: (value: any) => value,
+    withDelay: (delay: number, value: any) => value,
+    Easing: {
+      linear: 'linear',
+      ease: 'ease',
+      quad: 'quad',
+      cubic: 'cubic',
+      poly: 'poly',
+      sin: 'sin',
+      circle: 'circle',
+      exp: 'exp',
+      elastic: 'elastic',
+      back: 'back',
+      bounce: 'bounce',
+      bezier: 'bezier',
+      in: (easing: any) => easing,
+      out: (easing: any) => easing,
+      inOut: (easing: any) => easing,
+    },
+    FadeInRight: {
+      delay: () => ({
+        duration: () => ({
+          springify: () => ({}),
+        }),
+      }),
+    },
+    FadeInLeft: {
+      delay: () => ({
+        duration: () => ({
+          springify: () => ({}),
+        }),
+      }),
+    },
+    FadeInDown: {
+      delay: () => ({
+        duration: () => ({
+          springify: () => ({}),
+        }),
+      }),
+    },
+    FadeInUp: {
+      delay: () => ({
+        duration: () => ({
+          springify: () => ({}),
+        }),
+      }),
+    },
+    FadeIn: {
+      delay: () => ({
+        duration: () => ({}),
+      }),
+    },
+    FadeOut: {
+      delay: () => ({
+        duration: () => ({}),
+      }),
+    },
+    Layout: {
+      springify: () => ({}),
+    },
+    runOnJS: (fn: any) => fn,
+    runOnUI: (fn: any) => fn,
   };
-  Reanimated.FadeInUp = {
-    delay: () => ({duration: () => ({springify: () => ({})})}),
-  };
-  Reanimated.FadeIn = {
-    delay: () => ({duration: () => ({})}),
-  };
-  Reanimated.Layout = {
-    springify: () => ({}),
-  };
+  
   return Reanimated;
 });
 
@@ -180,4 +280,5 @@ jest.mock('@theme', () => ({
     xxl: 48,
   },
 }));
+
 
