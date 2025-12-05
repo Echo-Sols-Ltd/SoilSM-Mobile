@@ -50,6 +50,46 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+// Mock navigation
+const mockNavigation = {
+  navigate: jest.fn(),
+  goBack: jest.fn(),
+  replace: jest.fn(),
+  push: jest.fn(),
+  pop: jest.fn(),
+  reset: jest.fn(),
+  setParams: jest.fn(),
+  dispatch: jest.fn(),
+  isFocused: jest.fn(() => true),
+  canGoBack: jest.fn(() => true),
+  getParent: jest.fn(),
+  getState: jest.fn(),
+  setOptions: jest.fn(),
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+};
+
+jest.mock('@react-navigation/stack', () => ({
+  StackNavigationProp: jest.fn(),
+  createStackNavigator: jest.fn(),
+  CardStyleInterpolators: {
+    forHorizontalIOS: jest.fn(),
+  },
+}));
+
+jest.mock('@react-navigation/bottom-tabs', () => ({
+  createBottomTabNavigator: jest.fn(),
+}));
+
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => mockNavigation,
+  useFocusEffect: jest.fn(),
+  useRoute: () => ({
+    params: {},
+  }),
+}));
+
+
 // Mock theme
 jest.mock('@theme', () => ({
   colors: {
