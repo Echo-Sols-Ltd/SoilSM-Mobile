@@ -5,6 +5,24 @@ import 'react-native-gesture-handler/jestSetup';
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
   Reanimated.default.call = () => {};
+  Reanimated.FadeInRight = {
+    delay: () => ({duration: () => ({springify: () => ({})})}),
+  };
+  Reanimated.FadeInLeft = {
+    delay: () => ({duration: () => ({springify: () => ({})})}),
+  };
+  Reanimated.FadeInDown = {
+    delay: () => ({duration: () => ({springify: () => ({})})}),
+  };
+  Reanimated.FadeInUp = {
+    delay: () => ({duration: () => ({springify: () => ({})})}),
+  };
+  Reanimated.FadeIn = {
+    delay: () => ({duration: () => ({})}),
+  };
+  Reanimated.Layout = {
+    springify: () => ({}),
+  };
   return Reanimated;
 });
 
@@ -93,27 +111,46 @@ jest.mock('@react-navigation/native', () => ({
 // Mock theme
 jest.mock('@theme', () => ({
   colors: {
-    primary: {main: '#4CAF50', light: '#81C784', dark: '#388E3C'},
+    primary: {main: '#4CAF50', light: '#81C784', dark: '#388E3C', gradient: ['#2E7D32', '#4CAF50']},
     secondary: {main: '#FF9800', light: '#FFB74D', dark: '#F57C00'},
-    success: {main: '#4CAF50'},
-    error: {main: '#F44336'},
-    warning: {main: '#FF9800'},
+    success: {main: '#4CAF50', light: '#81C784', dark: '#388E3C'},
+    error: {main: '#F44336', light: '#EF5350', dark: '#C62828'},
+    warning: {main: '#FF9800', light: '#FFB74D', dark: '#E65100'},
+    info: {main: '#1976D2', light: '#42A5F5', dark: '#1565C0'},
     text: {
       primary: '#212121',
       secondary: '#757575',
       disabled: '#BDBDBD',
       white: '#FFFFFF',
+      inverse: '#FFFFFF',
     },
     background: {
       default: '#FFFFFF',
       paper: '#FAFAFA',
+      dark: '#1A1A1A',
+      light: '#FAFAFA',
     },
     border: {
       light: '#E0E0E0',
       medium: '#BDBDBD',
+      dark: '#9E9E9E',
     },
     shadow: {
-      medium: '#000000',
+      light: 'rgba(0, 0, 0, 0.1)',
+      medium: 'rgba(0, 0, 0, 0.15)',
+      dark: 'rgba(0, 0, 0, 0.25)',
+    },
+    gray: {
+      50: '#FAFAFA',
+      100: '#F5F5F5',
+      200: '#EEEEEE',
+      300: '#E0E0E0',
+      400: '#BDBDBD',
+      500: '#9E9E9E',
+      600: '#757575',
+      700: '#616161',
+      800: '#424242',
+      900: '#212121',
     },
   },
   spacing: {
@@ -125,13 +162,22 @@ jest.mock('@theme', () => ({
     xxl: 48,
   },
   typography: {
-    h1: {fontSize: 32, fontWeight: '700'},
-    h2: {fontSize: 24, fontWeight: '600'},
-    h3: {fontSize: 20, fontWeight: '600'},
-    body1: {fontSize: 16, fontWeight: '400'},
-    body2: {fontSize: 14, fontWeight: '400'},
-    caption: {fontSize: 12, fontWeight: '400'},
-    button: {fontSize: 16, fontWeight: '600'},
+    h1: {fontSize: 32, fontWeight: '700', lineHeight: 40},
+    h2: {fontSize: 24, fontWeight: '700', lineHeight: 32},
+    h3: {fontSize: 20, fontWeight: '600', lineHeight: 28},
+    h4: {fontSize: 18, fontWeight: '600', lineHeight: 24},
+    body1: {fontSize: 16, fontWeight: '400', lineHeight: 24},
+    body2: {fontSize: 14, fontWeight: '400', lineHeight: 20},
+    caption: {fontSize: 12, fontWeight: '400', lineHeight: 16},
+    button: {fontSize: 16, fontWeight: '600', lineHeight: 24},
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
   },
 }));
 

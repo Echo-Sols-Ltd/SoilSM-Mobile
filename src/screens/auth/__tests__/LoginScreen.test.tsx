@@ -1,11 +1,12 @@
 import React from 'react';
 import {render, fireEvent, waitFor} from '@testing-library/react-native';
-import {LoginScreen} from '../LoginScreen';
-import {useAuth} from '@contexts/AuthContext';
 
 jest.mock('@contexts/AuthContext');
 jest.mock('@hooks');
 jest.mock('@utils/validation');
+
+import {LoginScreen} from '../LoginScreen';
+import {useAuth} from '@contexts/AuthContext';
 
 jest.mock('@hooks', () => ({
   useFormAnimation: () => ({
