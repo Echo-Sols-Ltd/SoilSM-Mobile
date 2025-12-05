@@ -34,6 +34,28 @@ export const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-20);
+  const formOpacity = useSharedValue(0);
+  const formTranslateY = useSharedValue(20);
+
+  useEffect(() => {
+    headerOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
+    headerTranslateY.value = withSpring(0, {damping: 12, stiffness: 100});
+    formOpacity.value = withTiming(1, {duration: 500, delay: 200});
+    formTranslateY.value = withSpring(0, {damping: 12, stiffness: 100, delay: 200});
+  }, []);
+
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+    transform: [{translateY: headerTranslateY.value}],
+  }));
+
+  const formAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: formOpacity.value,
+    transform: [{translateY: formTranslateY.value}],
+  }));
+
   const handleSend = async () => {
     if (!email.trim()) {
       setError(t('emailRequired'));
@@ -62,7 +84,7 @@ export const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <Animated.View style={[styles.header, animatedStyle]}>
+          <Animated.View style={[styles.header, headerAnimatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -78,7 +100,7 @@ export const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
           </Animated.View>
 
           {/* Form */}
-          <Animated.View style={[styles.form, animatedStyle]}>
+          <Animated.View style={[styles.form, formAnimatedStyle]}>
             <Input
               label={t('email')}
               value={email}
@@ -98,7 +120,7 @@ export const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               style={styles.button}
               loading={loading}
             />
-          </View>
+          </Animated.View>
 
           {/* Footer */}
           <View style={styles.footer}>
@@ -107,7 +129,6 @@ export const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
               <Text style={styles.footerLink}>{t('login')}</Text>
             </TouchableOpacity>
           </View>
-          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

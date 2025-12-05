@@ -175,7 +175,7 @@ export const SettingsScreen: React.FC = () => {
               />
             }
           />
-        </View>
+        </Animated.View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('privacySecurity')}</Text>
@@ -214,7 +214,7 @@ export const SettingsScreen: React.FC = () => {
             }
           />
           <SettingItem title={t('blockedUsers')} onPress={() => {}} />
-        </Animated.View>
+        </View>
 
         <Animated.View entering={FadeInDown.delay(200).duration(400).springify()} style={styles.section}>
           <Text style={styles.sectionTitle}>{t('language')}</Text>
@@ -245,7 +245,7 @@ export const SettingsScreen: React.FC = () => {
               )
             }
           />
-        </View>
+        </Animated.View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('helpCenter')}</Text>
@@ -269,7 +269,7 @@ export const SettingsScreen: React.FC = () => {
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>{t('logout')}</Text>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

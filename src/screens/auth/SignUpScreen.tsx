@@ -148,7 +148,7 @@ export const SignUpScreen: React.FC<Props> = ({navigation}) => {
               loading={isLoading}
               disabled={isLoading}
             />
-          </View>
+          </Animated.View>
 
           {/* Divider */}
           <View style={styles.dividerContainer}>

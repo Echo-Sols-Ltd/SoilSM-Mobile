@@ -17,12 +17,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@screens/*": ["src/screens/*"],
-      "@navigation/*": ["src/navigation/*"],
-      "@utils/*": ["src/utils/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@theme/*": ["src/theme/*"]
+      "@components": ["src/components"],
+      "@screens": ["src/screens"],
+      "@navigation": ["src/navigation"],
+      "@utils": ["src/utils"],
+      "@i18n": ["src/i18n"],
+      "@theme": ["src/theme"],
+      "@contexts": ["src/contexts"],
+      "@hooks": ["src/hooks"]
     }
   },
   "include": ["src/**/*", "index.js", "App.tsx"],

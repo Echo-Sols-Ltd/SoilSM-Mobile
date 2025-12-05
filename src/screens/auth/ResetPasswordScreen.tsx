@@ -36,6 +36,28 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-20);
+  const formOpacity = useSharedValue(0);
+  const formTranslateY = useSharedValue(20);
+
+  useEffect(() => {
+    headerOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
+    headerTranslateY.value = withSpring(0, {damping: 12, stiffness: 100});
+    formOpacity.value = withTiming(1, {duration: 500, delay: 200});
+    formTranslateY.value = withSpring(0, {damping: 12, stiffness: 100, delay: 200});
+  }, []);
+
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+    transform: [{translateY: headerTranslateY.value}],
+  }));
+
+  const formAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: formOpacity.value,
+    transform: [{translateY: formTranslateY.value}],
+  }));
+
   const validate = () => {
     const newErrors: {[key: string]: string} = {};
     if (!newPassword.trim()) {
@@ -78,7 +100,7 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <Animated.View style={[styles.header, animatedStyle]}>
+          <Animated.View style={[styles.header, headerAnimatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
@@ -94,7 +116,7 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
           </Animated.View>
 
           {/* Form */}
-          <Animated.View style={[styles.form, animatedStyle]}>
+          <Animated.View style={[styles.form, formAnimatedStyle]}>
             <View>
               <Input
                 label={t('newPassword')}
@@ -166,7 +188,7 @@ export const ResetPasswordScreen: React.FC<Props> = ({navigation}) => {
               variant="primary"
               style={styles.button}
             />
-          </View>
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

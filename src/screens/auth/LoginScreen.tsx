@@ -133,7 +133,7 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
               loading={isLoading}
               disabled={isLoading}
             />
-          </View>
+          </Animated.View>
 
           {/* Divider */}
           <View style={styles.dividerContainer}>
@@ -161,7 +161,6 @@ export const LoginScreen: React.FC<Props> = ({navigation}) => {
               <Text style={styles.footerLink}>{t('signUp')}</Text>
             </TouchableOpacity>
           </View>
-          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

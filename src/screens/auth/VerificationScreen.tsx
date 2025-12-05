@@ -34,6 +34,19 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-20);
+
+  React.useEffect(() => {
+    headerOpacity.value = withTiming(1, {duration: 500, easing: Easing.out(Easing.cubic)});
+    headerTranslateY.value = withSpring(0, {damping: 12, stiffness: 100});
+  }, []);
+
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: headerOpacity.value,
+    transform: [{translateY: headerTranslateY.value}],
+  }));
+
   React.useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
@@ -92,7 +105,7 @@ export const VerificationScreen: React.FC<Props> = ({navigation}) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <Animated.View style={[styles.header, animatedStyle]}>
+          <Animated.View style={[styles.header, headerAnimatedStyle]}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backButton}>
