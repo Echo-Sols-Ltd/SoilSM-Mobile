@@ -1,12 +1,6 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-  }),
-}));
-
 import {SoilScreen} from '../SoilScreen';
 
 describe('SoilScreen', () => {

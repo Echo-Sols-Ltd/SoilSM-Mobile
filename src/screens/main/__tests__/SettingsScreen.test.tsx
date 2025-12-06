@@ -14,13 +14,6 @@ jest.mock('@contexts/AuthContext', () => ({
   })),
   AuthProvider: ({children}: {children: React.ReactNode}) => children,
 }));
-jest.mock('@i18n', () => ({
-  setStoredLanguage: jest.fn(() => Promise.resolve()),
-  default: {
-    changeLanguage: jest.fn(),
-    language: 'en',
-  },
-}));
 
 import {SettingsScreen} from '../SettingsScreen';
 import {useAuth} from '@contexts/AuthContext';

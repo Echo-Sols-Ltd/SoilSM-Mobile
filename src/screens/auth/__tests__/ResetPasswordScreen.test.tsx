@@ -1,13 +1,6 @@
 import React from 'react';
 import {render, fireEvent} from '@testing-library/react-native';
 
-jest.mock('@hooks', () => ({
-  useFormAnimation: () => ({
-    headerAnimatedStyle: {},
-    formAnimatedStyle: {},
-  }),
-}));
-
 import {ResetPasswordScreen} from '../ResetPasswordScreen';
 
 const mockNavigation = {

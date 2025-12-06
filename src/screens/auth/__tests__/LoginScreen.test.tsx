@@ -36,23 +36,6 @@ jest.mock('@utils/validation', () => ({
 import {LoginScreen} from '../LoginScreen';
 import {useAuth} from '@contexts/AuthContext';
 
-jest.mock('@hooks', () => ({
-  useFormAnimation: () => ({
-    headerAnimatedStyle: {},
-    formAnimatedStyle: {},
-  }),
-}));
-
-jest.mock('@utils/validation', () => ({
-  validateForm: (values: Record<string, string>) => {
-    const errors: Record<string, string> = {};
-    if (!values.email) errors.email = 'emailRequired';
-    if (!values.password) errors.password = 'passwordRequired';
-    return errors;
-  },
-  ValidationSchema: {},
-}));
-
 const mockNavigation = {
   navigate: jest.fn(),
   goBack: jest.fn(),
@@ -69,10 +52,10 @@ describe('LoginScreen', () => {
   });
 
   it('renders correctly', () => {
-    const {getByText, getByPlaceholderText} = render(
+    const {getAllByText, getByPlaceholderText} = render(
       <LoginScreen navigation={mockNavigation as any} />
     );
-    expect(getByText('login')).toBeTruthy();
+    expect(getAllByText('login').length).toBeGreaterThan(0);
     expect(getByPlaceholderText('enterEmail')).toBeTruthy();
     expect(getByPlaceholderText('enterPassword')).toBeTruthy();
   });
@@ -92,10 +75,11 @@ describe('LoginScreen', () => {
   });
 
   it('shows validation errors for empty fields', async () => {
-    const {getByText, getByPlaceholderText} = render(
+    const {getAllByText, getByText} = render(
       <LoginScreen navigation={mockNavigation as any} />
     );
-    const loginButton = getByText('login');
+    const loginButtons = getAllByText('login');
+    const loginButton = loginButtons[loginButtons.length - 1]; // Get the button (last one)
     fireEvent.press(loginButton);
 
     await waitFor(() => {
@@ -105,13 +89,15 @@ describe('LoginScreen', () => {
 
   it('calls login function when form is valid', async () => {
     mockLogin.mockResolvedValue({success: true});
-    const {getByText, getByPlaceholderText} = render(
+    const {getAllByText, getByPlaceholderText} = render(
       <LoginScreen navigation={mockNavigation as any} />
     );
 
     fireEvent.changeText(getByPlaceholderText('enterEmail'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('enterPassword'), 'password123');
-    fireEvent.press(getByText('login'));
+    const loginButtons = getAllByText('login');
+    const loginButton = loginButtons[loginButtons.length - 1]; // Get the button (last one)
+    fireEvent.press(loginButton);
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'password123');

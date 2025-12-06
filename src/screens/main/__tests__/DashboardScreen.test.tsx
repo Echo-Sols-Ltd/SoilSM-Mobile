@@ -1,19 +1,6 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    getParent: jest.fn(() => ({
-      navigate: jest.fn(),
-    })),
-  }),
-}));
-
-jest.mock('date-fns', () => ({
-  format: jest.fn(() => 'Monday, January 1, 2024'),
-}));
-
 import {DashboardScreen} from '../DashboardScreen';
 
 describe('DashboardScreen', () => {

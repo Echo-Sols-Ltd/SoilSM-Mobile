@@ -327,6 +327,54 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
+// Mock AuthContext globally
+jest.mock('@contexts/AuthContext', () => {
+  const React = require('react');
+  return {
+    useAuth: jest.fn(() => ({
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+      login: jest.fn(() => Promise.resolve({success: true})),
+      signUp: jest.fn(() => Promise.resolve({success: true})),
+      logout: jest.fn(() => Promise.resolve()),
+      checkAuth: jest.fn(() => Promise.resolve()),
+    })),
+    AuthProvider: ({children}: {children: React.ReactNode}) => children,
+  };
+});
+
+// Mock hooks globally
+jest.mock('@hooks', () => ({
+  useFormAnimation: () => ({
+    headerAnimatedStyle: {},
+    formAnimatedStyle: {},
+  }),
+}));
+
+// Mock validation utils globally
+jest.mock('@utils/validation', () => ({
+  validateForm: (values: Record<string, string>) => {
+    const errors: Record<string, string> = {};
+    if (!values.email) errors.email = 'emailRequired';
+    if (!values.password) errors.password = 'passwordRequired';
+    if (!values.name) errors.name = 'nameRequired';
+    return errors;
+  },
+  validateField: jest.fn((value: string, rules: any) => {
+    if (rules.required && !value) return 'fieldRequired';
+    if (rules.email && value && !/\S+@\S+\.\S+/.test(value)) return 'invalidEmail';
+    if (rules.minLength && value.length < rules.minLength) return 'passwordMinLength';
+    return null;
+  }),
+  ValidationSchema: {},
+}));
+
+// Mock date-fns
+jest.mock('date-fns', () => ({
+  format: jest.fn(() => 'Monday, January 1, 2024'),
+}));
+
 // Mock theme
 jest.mock('@theme', () => ({
   colors: {
