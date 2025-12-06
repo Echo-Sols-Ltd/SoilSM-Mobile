@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Animated, {FadeInDown, FadeInRight, withSpring, useSharedValue, useAnimatedStyle, withTiming} from 'react-native-reanimated';
-import LinearGradient from 'react-native-linear-gradient';
+import {LinearGradient} from 'expo-linear-gradient';
 import {useTranslation} from 'react-i18next';
 import {Card} from '@components/Card';
 import {Badge, EmojiIcon} from '@components';

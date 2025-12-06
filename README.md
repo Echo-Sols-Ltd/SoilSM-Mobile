@@ -43,14 +43,37 @@ Before you begin, ensure you have the following installed:
 
 ## Running the App
 
-### Start Metro Bundler
+### Using Expo Go (Recommended for Testing)
+
+The easiest way to test the app on your device:
+
+1. **Install Expo Go on your device:**
+   - [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
+   - [iOS](https://apps.apple.com/app/expo-go/id982107779)
+
+2. **Start the development server:**
+   ```bash
+   npm start
+   ```
+
+3. **Scan the QR code:**
+   - **Android**: Open Expo Go → Scan QR code
+   - **iOS**: Open Camera app → Point at QR code
+
+4. **Make sure your device and computer are on the same Wi-Fi network**
+
+For detailed Expo Go setup, see [EXPO_SETUP.md](EXPO_SETUP.md)
+
+### Using Native Builds
+
+#### Start Metro Bundler
 
 In one terminal, start the Metro bundler:
 ```bash
 npm start
 ```
 
-### Run on Android
+#### Run on Android
 
 In another terminal:
 ```bash
@@ -62,7 +85,7 @@ npm run android
 - Android emulator running or physical device connected
 - USB debugging enabled on physical device
 
-### Run on iOS (macOS only)
+#### Run on iOS (macOS only)
 
 In another terminal:
 ```bash
