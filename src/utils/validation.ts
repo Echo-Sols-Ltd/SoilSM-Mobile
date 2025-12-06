@@ -1,5 +1,8 @@
 import type {TFunction} from 'i18next';
 
+/**
+ * Validation rules for form fields
+ */
 export interface ValidationRules {
   required?: boolean;
   email?: boolean;
@@ -7,10 +10,17 @@ export interface ValidationRules {
   custom?: (value: string) => string | null;
 }
 
+/**
+ * Schema defining validation rules for multiple fields
+ */
 export interface ValidationSchema {
   [key: string]: ValidationRules;
 }
 
+/**
+ * Validates a single field against provided rules
+ * @returns Error message or null if valid
+ */
 export const validateField = (
   value: string,
   rules: ValidationRules,
@@ -32,6 +42,10 @@ export const validateField = (
   return null;
 };
 
+/**
+ * Validates entire form against schema
+ * @returns Object with field names as keys and error messages as values
+ */
 export const validateForm = (
   values: Record<string, string>,
   schema: ValidationSchema,

@@ -15,6 +15,9 @@ interface InputProps extends TextInputProps {
   containerStyle?: ViewStyle;
 }
 
+/**
+ * Text input component with label and error message support
+ */
 export const Input: React.FC<InputProps> = ({
   label,
   error,

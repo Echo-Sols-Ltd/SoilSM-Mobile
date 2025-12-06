@@ -1,15 +1,22 @@
 import React, {createContext, useContext, useState, useEffect, ReactNode} from 'react';
 import {storage} from '@utils/storage';
 
+// Storage keys for authentication data
 const AUTH_TOKEN_KEY = '@soilsmart:auth_token';
 const USER_DATA_KEY = '@soilsmart:user_data';
 
+/**
+ * User data structure
+ */
 interface User {
   id: string;
   name: string;
   email: string;
 }
 
+/**
+ * Authentication context interface
+ */
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -22,6 +29,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Authentication provider component
+ * Manages user authentication state and provides auth methods
+ */
 export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);

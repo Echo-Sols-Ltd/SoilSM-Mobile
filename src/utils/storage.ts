@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/**
+ * Wrapper for AsyncStorage with error handling
+ * Provides type-safe storage operations for the app
+ */
 export const storage = {
   async getItem(key: string): Promise<string | null> {
     try {

@@ -19,6 +19,9 @@ interface ButtonProps {
   textStyle?: TextStyle;
 }
 
+/**
+ * Reusable button component with loading and disabled states
+ */
 export const Button: React.FC<ButtonProps> = ({
   title,
   onPress,

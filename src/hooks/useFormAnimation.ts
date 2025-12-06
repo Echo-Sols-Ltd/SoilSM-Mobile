@@ -8,6 +8,11 @@ import {
   Easing,
 } from 'react-native-reanimated';
 
+/**
+ * Custom hook for form screen animations
+ * Provides animated styles for header and form sections
+ * @param delay - Delay in ms before form animation starts (default: 200)
+ */
 export const useFormAnimation = (delay = 200) => {
   const headerOpacity = useSharedValue(0);
   const headerTranslateY = useSharedValue(-20);
